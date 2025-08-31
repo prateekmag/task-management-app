@@ -83,6 +83,7 @@ function handleRequest(e) {
     try {
       const ss = SpreadsheetApp.getActiveSpreadsheet();
       let sheet = ss.getActiveSheet();
+      const now = new Date();
       
       // Create headers if this is a new sheet
       if (sheet.getLastRow() === 0) {
@@ -95,6 +96,33 @@ function handleRequest(e) {
           'Priority',
           'Status'
         ]);
+        return output.setContent(JSON.stringify({
+          status: 'success',
+          message: 'Sheet initialized with headers',
+          data: { initialized: true }
+        }));
+      }
+      
+      // Check for duplicate entries in the last 30 seconds
+      const lastRow = sheet.getLastRow();
+      if (lastRow > 1) {  // Skip header row
+        const lastEntries = sheet.getRange(Math.max(2, lastRow - 4), 1, Math.min(5, lastRow - 1), 7).getValues();
+        const isDuplicate = lastEntries.some(row => {
+          const rowTime = new Date(row[0]);
+          const timeDiff = (now - rowTime) / 1000; // in seconds
+          return (
+            timeDiff < 30 && // Within last 30 seconds
+            row[1] === data.employeeName &&
+            row[2] === data.taskTitle
+          );
+        });
+        
+        if (isDuplicate) {
+          return output.setContent(JSON.stringify({
+            status: 'error',
+            message: 'Duplicate entry detected. This task was already added recently.'
+          }));
+        }
       }
       
       // Prepare task data with defaults

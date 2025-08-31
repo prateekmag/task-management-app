@@ -9,12 +9,25 @@ function logError(error, message = 'An error occurred') {
     return null;
 }
 
+// Track if form is being submitted
+let isSubmitting = false;
+
 document.getElementById('taskForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+    
+    // Prevent multiple submissions
+    if (isSubmitting) return;
     
     const form = e.target;
     const submitButton = form.querySelector('button[type="submit"]');
     const formData = new FormData(form);
+    
+    // Mark as submitting
+    isSubmitting = true;
+    
+    // Disable submit button to prevent multiple submissions
+    submitButton.disabled = true;
+    submitButton.innerHTML = 'Saving...';
     
     // Prepare task data
     const taskData = {
@@ -25,10 +38,6 @@ document.getElementById('taskForm').addEventListener('submit', async (e) => {
         priority: formData.get('priority'),
         status: 'Pending'
     };
-    
-    // Disable submit button to prevent multiple submissions
-    submitButton.disabled = true;
-    submitButton.innerHTML = 'Saving...';
     
     try {
         console.log('Sending data:', taskData);
@@ -91,6 +100,8 @@ document.getElementById('taskForm').addEventListener('submit', async (e) => {
             showMessage(`Error: ${error.message}`, 'error');
         }
     } finally {
+        // Re-enable the form
+        isSubmitting = false;
         submitButton.disabled = false;
         submitButton.innerHTML = 'Create Task';
     }
