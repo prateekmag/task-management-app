@@ -1,6 +1,6 @@
 // Google Apps Script Web App URL
 // Make sure your Google Apps Script is deployed as a web app with 'Anyone, even anonymous' access
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxgRKVN5bzSsUCQhOiuk26DroDYiHPyGVtGe7iOoWbinLVrvsbmLXfWunVwq6Szt6OZUw/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxuf2ab4hJbWWKEZ_lalBF0TdwzDWrEXEnwoitzz4BmOoyvt-g5M8LN-VjSsvUap-HiHA/exec';
 
 // Helper function to log errors to console and show to user
 function logError(error, message = 'An error occurred') {
